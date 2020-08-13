@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - PacPoint
+  - StageControl
+  - Ghosts
+  - boost
   layers:
   - Default
   - TransparentFX
@@ -15,11 +18,11 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - 
-  - 
-  - 
-  - 
-  - 
+  - nop
+  - Ghosts
+  - points
+  - Player
+  - boost
   - 
   - 
   - 
