@@ -18,6 +18,6 @@ public class Menu : MonoBehaviour
     }
     public void Jogar()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex +1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

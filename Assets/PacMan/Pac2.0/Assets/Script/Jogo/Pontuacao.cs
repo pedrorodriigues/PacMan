@@ -10,10 +10,13 @@ public class Pontuacao : MonoBehaviour
 {
     public TextMeshProUGUI pontuação;
     public static float score = 0;
-    Stages Diff = new Stages();
+    
     bool scare;
     public GameObject controlGhost;
     enemyIA enemy;
+    public GameObject test;
+    private Stages Diff;
+    public GameObject stg;
 
 
 
@@ -22,6 +25,7 @@ public class Pontuacao : MonoBehaviour
     {
         enemy = controlGhost.GetComponent<enemyIA>();
         scare = enemy.scared;
+        Diff = stg.GetComponent<Stages>();
     }
 
     void OnTriggerEnter(Collider col)
@@ -30,7 +34,9 @@ public class Pontuacao : MonoBehaviour
 
         if (col.gameObject.tag == "PacPoint")
         {
-
+            
+            Debug.Log("audio aqui");
+            //test.GetComponent<AudioSource>().Play();
             Destroy(col.gameObject);
             score += 1 * Diff.ScoreMult[enemyIA.stage];
             pontuação.text = "Score:" + score.ToString();
@@ -48,7 +54,10 @@ public class Pontuacao : MonoBehaviour
             }
             else
             {
-                Time.timeScale = 0;
+
+                // firstpersoncontroller a = this.GetComponent < "First Person Controller" >();
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+                this.gameObject.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController> ().enabled=false;
             }
 
         }

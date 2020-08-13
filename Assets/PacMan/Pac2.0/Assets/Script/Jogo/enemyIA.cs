@@ -15,7 +15,8 @@ public class enemyIA : MonoBehaviour
     Vector3[] CornerPositon = new[] { new Vector3(14, 0, -22), new Vector3(-21, 0, -21), new Vector3(-22, 0, 20), new Vector3(15, 0, 20) };
     Vector3[] Position1 = new[] { new Vector3(11.3f, 0, -10.87f), new Vector3(-5.45f, 0, -18.28f), new Vector3(-5.75f, 0, 18.66f) ,new Vector3(-1.38f, 0, 18.47f) };
     Vector3[] Position2 = new[] { new Vector3(7.51f, 0, -19.48f), new Vector3(-17.23f, 0, -14.77f), new Vector3(-14.64f, 0, 14.96f), new Vector3(7.99f, 0, 12.67f) };
-    Stages Diff = new Stages();
+    private Stages Diff;
+    public GameObject stg;
     float distance, refindWhen, now, refind,cornerTime;
     public static int stage;
     int sort;
@@ -254,7 +255,8 @@ public class enemyIA : MonoBehaviour
     }
     private void Start()
     {
-       
+        Diff = stg.GetComponent<Stages>();
+        
         Prep_Stage();
     }
 
