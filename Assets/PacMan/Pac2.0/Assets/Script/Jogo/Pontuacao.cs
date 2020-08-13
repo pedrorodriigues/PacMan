@@ -57,7 +57,7 @@ public class Pontuacao : MonoBehaviour
 
                 // firstpersoncontroller a = this.GetComponent < "First Person Controller" >();
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-                this.gameObject.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController> ().enabled=false;
+               // this.gameObject.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController> ().enabled=false;
             }
 
         }
