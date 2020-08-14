@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Pac2.0/Assets/Scene/Menu.unity
+  - enabled: 1
+    path: Assets/Pac/Assets/Scene/Menu.unity
     guid: bafcdf6bb07003540a48d96803553594
   - enabled: 1
-    path: Assets/Pac2.0/Assets/Scene/Game.unity
+    path: Assets/Pac/Assets/Scene/Game.unity
     guid: d027fe1a77511c544ad7d118a03fcb22
   - enabled: 0
-    path: Assets/Pac2.0/Assets/Scene/EndScreen.unity
+    path: Assets/Pac/Assets/Scene/EndScreen.unity
     guid: c8fce792a582889408dca7543401955e
   m_configObjects: {}

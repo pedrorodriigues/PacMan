@@ -7684,12 +7684,6 @@ MonoBehaviour:
   controlGhost: {fileID: 1646528796}
   test: {fileID: 0}
   stg: {fileID: 1923520517}
---- !u!4 &612466347 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0,
-    type: 3}
-  m_PrefabInstance: {fileID: 800421270}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &622838325
 GameObject:
   m_ObjectHideFlags: 0
@@ -9824,6 +9818,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_Name
       value: FPSController
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 5e9e851c0e142814dac026a256ba2ac0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20751,7 +20749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb2f88325e2fba4793c5795e3492299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 612466347}
+  Player: {fileID: 4185060392320603326}
   Ghost:
   - {fileID: 1860743388}
   - {fileID: 1738360323}
@@ -34755,7 +34753,7 @@ Behaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4185060392320632988}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!54 &4185060392315644926
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -34898,7 +34896,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -34992,7 +34990,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &4185060392320632991
 MonoBehaviour:
   m_ObjectHideFlags: 0
