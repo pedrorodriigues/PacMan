@@ -19,7 +19,7 @@ public class EndScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("xd");
+       
     }
     public void RestartGame()
     {
@@ -27,8 +27,8 @@ public class EndScreen : MonoBehaviour
     }
     public void WriteScoreStage()
     {
-        pontuacao.text = "Sua pontuação maxima foi: " + Pontuacao.score;
-        stage.text = "Voce Atingiu a dificuldade: " + enemyIA.stage;
+        pontuacao.text = "Sua pontuação maxima foi: " + Player.score;
+        stage.text = "Voce Atingiu a dificuldade: " + enemyIA.stage+1;
 
     }
 }

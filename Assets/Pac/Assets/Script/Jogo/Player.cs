@@ -6,12 +6,10 @@ using TMPro;
 
 
 
-public class Pontuacao : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public TextMeshProUGUI pontuação;
     public static float score = 0;
-    
-    bool scare;
     public GameObject controlGhost;
     enemyIA enemy;
     public GameObject test;
@@ -24,7 +22,6 @@ public class Pontuacao : MonoBehaviour
     private void Start()
     {
         enemy = controlGhost.GetComponent<enemyIA>();
-        scare = enemy.scared;
         Diff = stg.GetComponent<Stages>();
     }
 
@@ -34,9 +31,6 @@ public class Pontuacao : MonoBehaviour
 
         if (col.gameObject.tag == "PacPoint")
         {
-            
-            //Debug.Log("audio aqui");
-            //test.GetComponent<AudioSource>().Play();
             Destroy(col.gameObject);
             score += 1 * Diff.ScoreMult[enemyIA.stage];
             pontuação.text = "Score:" + score.ToString();
@@ -54,10 +48,7 @@ public class Pontuacao : MonoBehaviour
             }
             else
             {
-
-                // firstpersoncontroller a = this.GetComponent < "First Person Controller" >();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
-               // this.gameObject.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController> ().enabled=false;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);  
             }
 
         }
@@ -66,24 +57,19 @@ public class Pontuacao : MonoBehaviour
 
             this.GetComponent<CharacterController>().enabled = false;
             this.transform.position = new Vector3(-20.91f, 2.66f, -1.7f);
-            //Debug.Log(col.transform.position);
             this.transform.rotation = new Quaternion(0, 0.9f, 0, 0.4f);
-            //Debug.Log(col.transform.position);
             this.GetComponent<CharacterController>().enabled = true;
         }
         else if (col.gameObject.name == "teleportWall2")
         {
-            Debug.Log(col.transform.position);
             this.GetComponent<CharacterController>().enabled = false;
             this.transform.position = new Vector3(13.35f, 2.66f, -1.89f);
-            //Debug.Log(col.transform.position);
             this.transform.rotation = new Quaternion(0, 0.4f, 0, -0.9f);
-            //Debug.Log(col.transform.position);
             this.GetComponent<CharacterController>().enabled = true;
         }
         else if ((col.gameObject.tag == "boost"))
         {
-           enemy.ScaredState();
+            enemy.ScaredState();
             Destroy(col.gameObject);
         }
         
