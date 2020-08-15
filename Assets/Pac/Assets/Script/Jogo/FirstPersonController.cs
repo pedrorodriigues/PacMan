@@ -185,7 +185,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			//Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
 
 			//For Auto walk, uncomment this line.
-			//m_Input.y=0.2f;
+			m_Input.y=0.2f;
 
 			//			if (m_walk == true) {
 			//				m_Input.y = 0.2f;

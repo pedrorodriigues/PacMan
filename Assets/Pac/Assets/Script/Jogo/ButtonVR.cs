@@ -32,7 +32,7 @@ public class ButtonVR : MonoBehaviour
     public void StartGame()
     {
         int valueScene = 1;
-        Debug.Log("testando nome aqui" + this.gameObject.tag);
+        
         if (this.gameObject.tag == "final")
             valueScene = -1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + valueScene);
