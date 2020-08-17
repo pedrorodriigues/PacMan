@@ -295,23 +295,11 @@ public class enemyIA : MonoBehaviour
 
     }
 
-    public  IEnumerator StartEnemyIA()
-    {
-        
-        while (GameStart.Pause)
-        {
-            yield return null;
-        }
-        Prep_Stage();
-    }
-
     //arrumado
     private void Start()
     {
-        stage = 0;
         Diff = stg.GetComponent<Stages>();
-        StartCoroutine(StartEnemyIA());
-        
+        Prep_Stage();
     }
 
 

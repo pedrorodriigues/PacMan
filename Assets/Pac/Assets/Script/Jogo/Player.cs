@@ -23,7 +23,6 @@ public class Player : MonoBehaviour
     {
         enemy = controlGhost.GetComponent<enemyIA>();
         Diff = stg.GetComponent<Stages>();
-        score = 0;
     }
 
     void OnTriggerEnter(Collider col)
