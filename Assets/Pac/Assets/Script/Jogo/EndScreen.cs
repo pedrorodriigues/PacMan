@@ -8,7 +8,6 @@ public class EndScreen : MonoBehaviour
 {
     public TextMeshProUGUI pontuacao;
     public TextMeshProUGUI stage;
-    // Start is called before the first frame update
     void Start()
     {
         
@@ -16,19 +15,17 @@ public class EndScreen : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
     public void RestartGame()
     {
+        Player.score = 0;
+        enemyIA.stage = 0;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
     public void WriteScoreStage()
     {
         pontuacao.text = "Sua pontuação maxima foi: " + Player.score;
-        stage.text = "Voce Atingiu a dificuldade: " + enemyIA.stage+1;
+        stage.text = "Voce Atingiu a dificuldade: " + (enemyIA.stage+1);
+
 
     }
 }

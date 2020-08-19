@@ -14,7 +14,6 @@ public class enemyIA : MonoBehaviour
     Vector3[] CornerPositon = new[] { new Vector3(14, 0, -22), new Vector3(-21, 0, -21), new Vector3(-22, 0, 20), new Vector3(15, 0, 20) };
     Vector3[] Position1 = new[] { new Vector3(11.3f, 0, -10.87f), new Vector3(-5.45f, 0, -18.28f), new Vector3(-5.75f, 0, 18.66f) ,new Vector3(-1.38f, 0, 18.47f) };
     Vector3[] Position2 = new[] { new Vector3(7.51f, 0, -19.48f), new Vector3(-17.23f, 0, -14.77f), new Vector3(-14.64f, 0, 14.96f), new Vector3(7.99f, 0, 12.67f) };
-
     private Stages Diff;
     public GameObject stg, nextMenuUI;
     float distance, refindWhen;
@@ -25,10 +24,29 @@ public class enemyIA : MonoBehaviour
     public bool[] isStarts = new bool[4] { true, true, true, true };
     Color[] original =new Color[4];
     private Coroutine scaredRoutine;
-    
+    private Coroutine ColorRoutine;
 
 
-    //arrumado
+
+    //controla se o fantasma pode se mover ou não
+    public void SpeedControl()
+    {
+        //caso o jogador tiver se movendo, o fantasma se move tambem
+        if (DataReceive.press)
+        {
+            for (int i = 0; i < 4; i++)
+                if(Ghost[i].gameObject.activeSelf)
+                    Ghost[i].isStopped = false;
+        }
+        else
+        {
+            for (int i = 0; i < 4; i++)
+                if (Ghost[i].gameObject.activeSelf)
+                    Ghost[i].isStopped = true;
+        }
+    }
+
+    //procura o caminho para o fantasma chamado seguir o player 
     public void G_Find(int i)
     {
        
@@ -64,16 +82,28 @@ public class enemyIA : MonoBehaviour
         }
     }
 
-    //arrumado
+    //realiza a troca de cor dos fantasmas para sinalizar que esta no final do scared state
     IEnumerator ChangeColorInFinalScaredState()
     {
         float timeToWait = Diff.ScaredStateTime[stage]/2;
         bool white = false;
         bool keepRun = true;
-        float timeTotal = 0; ;
+        float timeTotal = 0; 
+        float time = 0;
         while (keepRun)
         {
-            yield return new WaitForSeconds(timeToWait);
+            time = 0;
+            while (time < timeToWait)
+            {
+                if (DataReceive.press)
+                {
+                    time += Time.deltaTime;
+                    // Debug.Log(time);
+
+                }
+
+                yield return null;
+            }        
             timeTotal += timeToWait;
             for (int i = 0; i < 4; i++)
             {
@@ -98,82 +128,106 @@ public class enemyIA : MonoBehaviour
 
 
             keepRun = scareds.Any(x=>x==true);
-            Debug.Log(keepRun);
+           
         }
         
         
    
     }
    
-    //arrumado
+    //coloca os fantasmas em modo assustado
     public void ScaredState()
     {
+        
         MeshRenderer temp;
-        if (scaredRoutine == null)
+
+        for (int i = 0; i < 4; i++)
         {
-            for (int i = 0; i < 4; i++)
+            if (Ghost[i].gameObject.activeSelf)
             {
                 temp = Ghost[i].GetComponentInChildren<MeshRenderer>();
                 original[i] = temp.material.color;
                 temp.material.SetColor("_Color", Color.blue);
-
-
-                Ghost[i].speed = Diff.speed[stage][i]/2;
+                Ghost[i].speed = Diff.speed[stage][i] / 2;
                 Ghost[i].destination = CornerPositon[i];
+                if (!scareds[i])
+                    StartCoroutine(FixCornerLock(i));
                 scareds[i] = true;
-                StartCoroutine(FixCornerLock(i));
-                
             }
-            StartCoroutine(ChangeColorInFinalScaredState());
-            scaredRoutine = StartCoroutine(WaiScaredEnd());
           
-
-
+        }
+        if (ColorRoutine == null)
+        {
+            ColorRoutine = StartCoroutine(ChangeColorInFinalScaredState());
+            scaredRoutine = StartCoroutine(WaiScaredEnd());
         }
         else
         {
             StopCoroutine(scaredRoutine);
+            StopCoroutine(ColorRoutine);
+            ColorRoutine = StartCoroutine(ChangeColorInFinalScaredState());
             scaredRoutine = StartCoroutine(WaiScaredEnd());
         }
+        
+
+
+        
+        
      
     }
     
-    //arrumado
+    //controla o tempo que falta para acabar o modo assustado
     public IEnumerator WaiScaredEnd()
     {
-        yield return new WaitForSeconds(Diff.ScaredStateTime[stage]);
+        float time = 0;
+        while (time < Diff.ScaredStateTime[stage])
+        {
+            if (DataReceive.press)
+            {
+                time += Time.deltaTime;
+                // Debug.Log(time);
+
+            }
+
+            yield return null;
+        }
+        
         for (int i = 0; i < 4; i++)
             EndScareState(i);
         scaredRoutine = null;
         
     }
 
-    //arrumado****
-    public void NextDiff()
-    {
-        nextMenuUI.SetActive(true);
-        Time.timeScale = 0;
-    }
-
-    //arrumado****
+    //aumenta a dificulade
     public void NextStage()
     {
+        
         stage += 1;
-        nextMenuUI.SetActive(false);
-        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        Prep_Stage();
+        
     }
 
-    //arrumado
+    //inicia os fantasmas
     IEnumerator StartG(int i)
     {
-        yield return new WaitForSeconds(Diff.startTime[stage][i]);
+        float time = 0;
+        while (time< Diff.startTime[stage][i])
+        {
+            if (DataReceive.press)
+            {
+                time += Time.deltaTime;
+               // Debug.Log(time);
+
+            }
+               
+            yield return null;
+        }
         StartCoroutine(Corner(i));
         StartCoroutine(Refind(i));   
     }
 
-    //arumado
+    //ajusta a movimentacao dos fantansmas para que nao fiquem preso no canto caso o tempo de coner deles ainda nao
+    //tenha acabado, mas ja tenha chegado no seu canto
     public IEnumerator FixCornerLock(int i)
     {
         int step = 0;
@@ -198,20 +252,47 @@ public class enemyIA : MonoBehaviour
         }
     }
     
-    //arrumado
+    //controla quando mandar os fantasmas para o seu canto
     IEnumerator Corner(int i)
     {
+        float time = 0;
         while (true)
         {
+            time = 0;
+
             if (!scareds[i])
             {
                 if (!isStarts[i])
-                    yield return new WaitForSeconds(Diff.cornerTime[stage][i]);
+                {
+                   
+                    while (time < Diff.cornerTime[stage][i])
+                    {
+                        if (DataReceive.press)
+                        {
+                            time += Time.deltaTime;
+                            // Debug.Log(time);
+
+                        }
+
+                        yield return null;
+                    }
+                }           
                 Ghost[i].destination = CornerPositon[i];
                 backCorner[i] = true;
                 StartCoroutine(FixCornerLock(i));
                 isStarts[i] = false;
-                yield return new WaitForSeconds(Diff.RefindAfterCorner[stage][i]);
+                time = 0;
+                while (time < Diff.RefindAfterCorner[stage][i])
+                {
+                    if (DataReceive.press)
+                    {
+                        time += Time.deltaTime;
+                        // Debug.Log(time);
+
+                    }
+
+                    yield return null;
+                }
                 backCorner[i] = false;
             }
             yield return null;
@@ -220,22 +301,49 @@ public class enemyIA : MonoBehaviour
             
     }
 
-    //arrumado
+    //manda aleatoriamente um fantasma para o canto, mesmo que nao seja seu momento ainda(tentar aumentar a aleatoriedade
+    //evitando que todos fiquem junto correndo atras do jogador)
     IEnumerator rndCorner()
     {
+        float time = 0;
         while (true)
         {
-            yield return new WaitForSeconds(Diff.rndCornerTime[stage]);
-                sort = Random.Range(0, 4);
+            time = 0;
+            while (time < Diff.rndCornerTime[stage])
+            {
+                if (DataReceive.press)
+                {
+                    time += Time.deltaTime;
+                    // Debug.Log(time);
+
+                }
+
+                yield return null;
+            }
+
+             sort = Random.Range(0, 4);
         }
     }
 
-    //arrumado
+    //controla o momento de recalcular a rota para perseguir o jogador
     IEnumerator Refind(int i)
     {
+        float time = 0;
         while (true)
         {
-            yield return new WaitForSeconds(Diff.refind[stage]);
+            time = 0;
+            while (time < Diff.refind[stage])
+            {
+                if (DataReceive.press)
+                {
+                    time += Time.deltaTime;
+                    // Debug.Log(time);
+
+                }
+
+                yield return null;
+            }
+            
            
             if (!backCorner[i]  && !scareds[i] && !isStarts[i])
             {
@@ -256,13 +364,24 @@ public class enemyIA : MonoBehaviour
 
     }
 
-    //arrumado
+    //revive o fantasma depois de ter sido morto no scared state
     public IEnumerator reviveGhost(GameObject ghost)
     {
         int i = 0;
         ghost.SetActive(false);        
         ghost.transform.position = new Vector3(-5.28f, 0.8332602f, -2.31f);
-        yield return new WaitForSeconds(Diff.timeToRespawn[stage]);
+        float time = 0;
+        while (time < Diff.timeToRespawn[stage])
+        {
+            if (DataReceive.press)
+            {
+                time += Time.deltaTime;
+               // Debug.Log(time);
+
+            }
+
+            yield return null;
+        }
         ghost.SetActive(true);
         while ((!GameObject.ReferenceEquals(ghost.GetComponent<NavMeshAgent>(), Ghost[i])))
             i++;
@@ -272,7 +391,7 @@ public class enemyIA : MonoBehaviour
 
     }
 
-    //arrumado
+    //acaba com o modo assustado dos fantasmas
     public void EndScareState(int i)
     {    
         MeshRenderer temp = Ghost[i].GetComponentInChildren<MeshRenderer>();
@@ -281,12 +400,13 @@ public class enemyIA : MonoBehaviour
         Ghost[i].speed = Diff.speed[stage][i];
     }
 
-    //arrumado
+    //prepara a incializacao dos fantasmas
     public void Prep_Stage()
     {
                  
         for (int i=0;i <4; i++)
         {
+            Ghost[i].speed = Diff.speed[stage][i];
             StartCoroutine(StartG(i));
                 
         }
@@ -295,6 +415,7 @@ public class enemyIA : MonoBehaviour
 
     }
 
+    //espera a pausa inicial do jogo para comecar
     public  IEnumerator StartEnemyIA()
     {
         
@@ -305,23 +426,19 @@ public class enemyIA : MonoBehaviour
         Prep_Stage();
     }
 
-    //arrumado
+    //setups iniciais
     private void Start()
     {
-        stage = 0;
+        
         Diff = stg.GetComponent<Stages>();
         StartCoroutine(StartEnemyIA());
         
     }
 
-
     void Update()
     {
-   
-        if (Player.score == 195)
-        {
-            NextDiff();
-        }
+        
+        SpeedControl();
         
     }
 }

@@ -8,35 +8,34 @@ public class ButtonVR : MonoBehaviour
 {
     // Start is called before the first frame update
     public Slider loadBar;
-    void Start()
-    {
-        
-    }
 
+
+
+    //funcao resposavel por clicar no botao depois de focar por um tempo, alem de controlar o slider
     IEnumerator WaitOnGazeEnterToStart(int opt)
     {
         loadBar.gameObject.SetActive(true);
         float time=0;
-        while (time<3)
+        while (time<2)
         {
             time += Time.deltaTime;
-            loadBar.value = time / 3;
+            loadBar.value = time / 2;
             yield return null;
         }
         if (opt == 1)
-            StartGame();
+            StartGame();  
         else
             QuitGame();
     }
+   
 
     public void StartGame()
     {
-        int valueScene = 1;
-        
-        if (this.gameObject.tag == "final")
-            valueScene = -1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + valueScene);
+        Player.score = 0;
+        enemyIA.stage = 0;
+        SceneManager.LoadScene(1);
     }
+
     public void QuitGame()
     {
         Application.Quit();
@@ -47,18 +46,13 @@ public class ButtonVR : MonoBehaviour
         StartCoroutine(WaitOnGazeEnterToStart(opt));
     }
 
+    //sair do foco no botao, mata todas as rotinas e esconde slider
     public void GazeExit()
     {
-
         StopAllCoroutines();
         loadBar.gameObject.SetActive(false);
         loadBar.value = 0;
-
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+   
 }

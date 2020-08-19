@@ -12,35 +12,45 @@ public class Player : MonoBehaviour
     public static float score = 0;
     public GameObject controlGhost;
     enemyIA enemy;
-    public GameObject test;
     private Stages Diff;
     public GameObject stg;
+    private int totalPoint=0;
 
 
 
 
     private void Start()
     {
+        //pega o script enemyIA de outro objeto
         enemy = controlGhost.GetComponent<enemyIA>();
+        //pega o script stages de outro objeto
         Diff = stg.GetComponent<Stages>();
-        score = 0;
+        
     }
 
+    //Caso haja alguma colisão com o jogador
     void OnTriggerEnter(Collider col)
     {
-
-
+        //colide com as esferas amarelas, incrementa pontuação e verifica se stage foi concluido.
         if (col.gameObject.tag == "PacPoint")
         {
             Destroy(col.gameObject);
+            totalPoint += 1;
             score += 1 * Diff.ScoreMult[enemyIA.stage];
             pontuação.text = "Score:" + score.ToString();
+            if (totalPoint == 74)
+            {
+                enemy.NextStage();
+            }
         }
+        //colide com os fantasmas
         else if (col.gameObject.tag == "Ghosts")
         {
             int i = 0;
+            //faz uma comparacao entre o fastama colidido com os fantasmas existestes e descobre qual foi que colidiu
             while ((!GameObject.ReferenceEquals(col.GetComponent<NavMeshAgent>(), enemy.Ghost[i])))
                 i++;
+            //verfica se o ghost q colideu com o player esta no estado de assustado
             if (enemy.scareds[i])
             {
                 score += 100;
@@ -49,10 +59,13 @@ public class Player : MonoBehaviour
             }
             else
             {
+
+                //chama a tela final depois de colidir com o fantasma sem estar assustado
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);  
             }
 
         }
+        //colisão com os potais, move o player para o outro portal.
         else if (col.gameObject.name == "teleportWall1")
         {
 
@@ -68,6 +81,7 @@ public class Player : MonoBehaviour
             this.transform.rotation = new Quaternion(0, 0.4f, 0, -0.9f);
             this.GetComponent<CharacterController>().enabled = true;
         }
+        //colisao com boost coloca os fantasmas em modo assustado
         else if ((col.gameObject.tag == "boost"))
         {
             enemy.ScaredState();

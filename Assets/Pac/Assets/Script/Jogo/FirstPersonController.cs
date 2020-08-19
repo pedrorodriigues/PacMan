@@ -33,9 +33,9 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		//Added by aaron;
 		private bool vr_Jump;
 		private bool vr_Jumping;
-
+        private bool finished=true;
 		private float m_YRotation;
-		private Vector2 m_Input;
+		private  Vector2 m_Input;
 		private Vector3 m_MoveDir = Vector3.zero;
 		private CharacterController m_CharacterController;
 		private CollisionFlags m_CollisionFlags;
@@ -55,7 +55,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		public int tmp_device;
 
 		private Quaternion initialRotation, gyroInitialRotation;
-
+        public int maxSteps=7;
+        private int stepCount =0;
 		private bool gyroEnabled;
 		private Gyroscope gyro;
 		private GameObject GyroControl;
@@ -175,39 +176,41 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		private void FixedUpdate()
 		{
 
-			float speed;
+            //Debug.Log(m_Input.y);
+            float speed;
+            
+            GetInput(out speed);
+            //DataReceive.x4.text = m_Input.y.ToString();
+            
 
-			GetInput(out speed);
+            //Debug.Log("FixedUpdate time :" + Time.deltaTime);
+            // always move along the camera forward as it is the direction that it being aimed at
+            //Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
 
+            //For Auto walk, uncomment this line.
+            //m_Input.y=0.2f;
 
-			//Debug.Log("FixedUpdate time :" + Time.deltaTime);
-			// always move along the camera forward as it is the direction that it being aimed at
-			//Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
+            //			if (m_walk == true) {
+            //				m_Input.y = 0.2f;
+            //			} else {
+            //				m_Input.y = 0;
+            //			}
+            //
+            //			if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
+            //			{
+            //				StartCoroutine(m_JumpBob.DoBobCycle());
+            //				PlayLandingSound();
+            //				m_MoveDir.y = 0f;
+            //				m_Jumping = false;
+            //			}
+            //			if (!m_CharacterController.isGrounded && !m_Jumping && m_PreviouslyGrounded)
+            //			{
+            //				m_MoveDir.y = 0f;
+            //			}
+            //
+            //			m_PreviouslyGrounded = m_CharacterController.isGrounded;
 
-			//For Auto walk, uncomment this line.
-			m_Input.y=0.2f;
-
-			//			if (m_walk == true) {
-			//				m_Input.y = 0.2f;
-			//			} else {
-			//				m_Input.y = 0;
-			//			}
-			//
-			//			if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
-			//			{
-			//				StartCoroutine(m_JumpBob.DoBobCycle());
-			//				PlayLandingSound();
-			//				m_MoveDir.y = 0f;
-			//				m_Jumping = false;
-			//			}
-			//			if (!m_CharacterController.isGrounded && !m_Jumping && m_PreviouslyGrounded)
-			//			{
-			//				m_MoveDir.y = 0f;
-			//			}
-			//
-			//			m_PreviouslyGrounded = m_CharacterController.isGrounded;
-
-			Vector3 desiredMove = head.transform.forward*m_Input.y + head.transform.right*m_Input.x;
+            Vector3 desiredMove = head.transform.forward*m_Input.y + head.transform.right*m_Input.x;
 
 			//print (desiredMove);
 
@@ -244,6 +247,16 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			UpdateCameraPosition(speed);
 
 			m_MouseLook.UpdateCursorLock();
+            if (stepCount == maxSteps && DataReceive.press)
+            {
+                DataReceive.press = false;
+                stepCount = 0;
+
+            }
+            else if (DataReceive.press)
+                stepCount++;
+            
+               
 		}
 
 
@@ -324,8 +337,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 			float vertical = 0.0f;
 
 			int i = 0;
-			//Touch touch;
-
+            //Touch touch;
+            
 			if (Input.touchCount > 0) {
 				Debug.Log("touchcount" + Input.touchCount);
 				for (i = 0; i < Input.touchCount; i++) {
@@ -352,10 +365,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 			// Use mouse to simulate the touch screen, if user touch then move forward
 			// Added by Aaron 2016.07.16
-			if (Input.GetMouseButton (0)) {
-				Debug.Log("foward");
+			if (DataReceive.press && stepCount<maxSteps) {
+               
+				//Debug.Log("foward " + stepCount );
 				vertical = 0.2f;
-			} 
+                
+
+            } 
 
 			//Analógico esquerdo no DS4
 			if (Input.GetAxis ("Vertical") > 0) {
