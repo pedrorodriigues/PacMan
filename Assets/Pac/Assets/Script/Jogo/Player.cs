@@ -73,6 +73,7 @@ public class Player : MonoBehaviour
             this.transform.position = new Vector3(-20.91f, 2.66f, -1.7f);
             this.transform.rotation = new Quaternion(0, 0.9f, 0, 0.4f);
             this.GetComponent<CharacterController>().enabled = true;
+            col.GetComponent<AudioSource>().Play();
         }
         else if (col.gameObject.name == "teleportWall2")
         {
@@ -80,6 +81,7 @@ public class Player : MonoBehaviour
             this.transform.position = new Vector3(13.35f, 2.66f, -1.89f);
             this.transform.rotation = new Quaternion(0, 0.4f, 0, -0.9f);
             this.GetComponent<CharacterController>().enabled = true;
+            col.GetComponent<AudioSource>().Play();
         }
         //colisao com boost coloca os fantasmas em modo assustado
         else if ((col.gameObject.tag == "boost"))

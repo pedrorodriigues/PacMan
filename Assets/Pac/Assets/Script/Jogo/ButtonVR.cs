@@ -33,7 +33,7 @@ public class ButtonVR : MonoBehaviour
     {
         Player.score = 0;
         enemyIA.stage = 0;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     public void QuitGame()
@@ -42,7 +42,8 @@ public class ButtonVR : MonoBehaviour
     }
 
     public void GazeEnterPlay(int opt)
-    {       
+    {
+        Debug.Log("xd");
         StartCoroutine(WaitOnGazeEnterToStart(opt));
     }
 

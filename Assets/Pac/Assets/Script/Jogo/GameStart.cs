@@ -28,10 +28,11 @@ public class GameStart : MonoBehaviour
         
         while (time >= 0)
         {
-            
-            yield return new WaitForSeconds(1f);
+
+            this.gameObject.GetComponent<AudioSource>().Play();
             CountText.text= time.ToString();
             time -= 1;
+            yield return new WaitForSeconds(1f);
         }
         CountText.enabled = false;
         controller.enabled = true;     
