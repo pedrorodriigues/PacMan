@@ -20,6 +20,13 @@ public class DataReceive : MonoBehaviour
     bool walked=false;
     int nInt = 100;
     public bool medFinish = false;
+    public float time = 0;
+    //alterar dependendo da velocidade do passo da pessoa : menor/manter se for muiito rapido : aumentar se for lento
+    public float intervalToPrev = 0.15f;
+    //deminuir caso levante muito pouco a perna
+    public float maxDiffToStep = 0.2f;
+    //pouca necessidade de mudar, mas pode reduzir caso esteja captando muito passo extra, mas alterar os 2 antes deve trazer melhor resultado
+    public float maxDiffToResetStep = 0.08f;
 
     //pega o valor medio de 10 marcações do valor y do vetor gravidade
     IEnumerator GetGravityYMed()
@@ -53,10 +60,8 @@ public class DataReceive : MonoBehaviour
     //responsavel por verificar se ouve passo
     IEnumerator SterpVer()
     {
-        float time = 0;
-        float intervalToPrev = 0.15f;
-        float maxDiffToStep = 0.2f;
-        float maxDiffToNormal = 0.08f;
+        
+        
 
         while (true) { 
             time += Time.deltaTime;
@@ -77,7 +82,7 @@ public class DataReceive : MonoBehaviour
                 }
             }
             //caso a perna tenha voltado para repouso, libera para ser possivel dar outro passo
-            if (Math.Abs(gravity[1]-yMed)< maxDiffToNormal && walked)
+            if (Math.Abs(gravity[1]-yMed)< maxDiffToResetStep && walked)
             {
                 preValueGravity[1] = gravity[1];
                 walked = false;
