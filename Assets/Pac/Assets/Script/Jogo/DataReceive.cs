@@ -13,6 +13,7 @@ public class DataReceive : MonoBehaviour
     // public TextMeshProUGUI x4;
     //public TextMeshProUGUI x5;
     // public TextMeshProUGUI x6;
+    public bool isEditor=false;
     private double[] gravity = new double[3];
     private double[] preValueGravity = new double[3];
     private double yMed;  
@@ -96,8 +97,9 @@ public class DataReceive : MonoBehaviour
     //fucao para testar no editor
     private void Update()
     {
-       // if (Input.GetMouseButton(0))
-         //   press = true;
+        if(isEditor)
+            if (Input.GetMouseButton(0))
+                press = true;
     }
 
     private void Start()
