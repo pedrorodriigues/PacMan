@@ -14,7 +14,8 @@ public class Player : MonoBehaviour
     enemyIA enemy;
     private Stages Diff;
     public GameObject stg;
-    private int totalPoint=0;
+    public int totalPoint=0;
+    public AudioSource pointSound;
 
 
 
@@ -25,6 +26,7 @@ public class Player : MonoBehaviour
         enemy = controlGhost.GetComponent<enemyIA>();
         //pega o script stages de outro objeto
         Diff = stg.GetComponent<Stages>();
+       
         
     }
 
@@ -34,11 +36,14 @@ public class Player : MonoBehaviour
         //colide com as esferas amarelas, incrementa pontuação e verifica se stage foi concluido.
         if (col.gameObject.tag == "PacPoint")
         {
+            Debug.Log("hey");
+            
+            pointSound.Play();
             Destroy(col.gameObject);
             totalPoint += 1;
             score += 1 * Diff.ScoreMult[enemyIA.stage];
             pontuação.text = "Score:" + score.ToString();
-            if (totalPoint == 74)
+            if (totalPoint == 68)
             {
                 enemy.NextStage();
             }

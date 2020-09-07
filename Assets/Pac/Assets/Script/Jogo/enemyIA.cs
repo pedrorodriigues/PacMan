@@ -17,33 +17,41 @@ public class enemyIA : MonoBehaviour
     private Stages Diff;
     public GameObject stg, nextMenuUI;
     float distance, refindWhen;
-    public static int stage;
-    int sort;
+    public static int stage=0;
+    int sort=10;
     private bool[] backCorner = new bool[] { false, false, false, false, false };
     public bool[] scareds = new bool[] { false, false, false, false, false };
     public bool[] isStarts = new bool[4] { true, true, true, true };
     Color[] original =new Color[4];
     private Coroutine scaredRoutine;
     private Coroutine ColorRoutine;
+    private int ghostTotal;
+    float scrLast;
+    public Player player;
 
 
 
     //controla se o fantasma pode se mover ou não
-    public void SpeedControl()
+    IEnumerator  SpeedControl()
     {
+
         //caso o jogador tiver se movendo, o fantasma se move tambem
-        if (DataReceive.press)
+        while (true)
         {
-            for (int i = 0; i < 4; i++)
-                if(Ghost[i].gameObject.activeSelf)
-                    Ghost[i].isStopped = false;
+            if (player.totalPoint % 10 == 0 && player.totalPoint>0 && scrLast!=player.totalPoint)
+            {
+                scrLast = player.totalPoint;
+                for (int i = 0; i < ghostTotal; i++)
+                {
+                    Debug.Log(Ghost[i].speed);
+                    Ghost[i].speed *= 1.1f;
+                    Debug.Log(Ghost[i].speed);
+                }
+
+            }
+            yield return null;
         }
-        else
-        {
-            for (int i = 0; i < 4; i++)
-                if (Ghost[i].gameObject.activeSelf)
-                    Ghost[i].isStopped = true;
-        }
+       
     }
 
     //procura o caminho para o fantasma chamado seguir o player 
@@ -95,7 +103,7 @@ public class enemyIA : MonoBehaviour
             time = 0;
             while (time < timeToWait)
             {
-                if (DataReceive.press)
+                if (true)
                 {
                     time += Time.deltaTime;
                     // Debug.Log(time);
@@ -105,7 +113,7 @@ public class enemyIA : MonoBehaviour
                 yield return null;
             }        
             timeTotal += timeToWait;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < ghostTotal; i++)
             {
                 if (scareds[i] && !white)
                 {
@@ -141,7 +149,7 @@ public class enemyIA : MonoBehaviour
         
         MeshRenderer temp;
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < ghostTotal; i++)
         {
             if (Ghost[i].gameObject.activeSelf)
             {
@@ -156,15 +164,15 @@ public class enemyIA : MonoBehaviour
             }
           
         }
-        if (ColorRoutine == null)
+        if (scaredRoutine == null)
         {
             ColorRoutine = StartCoroutine(ChangeColorInFinalScaredState());
             scaredRoutine = StartCoroutine(WaiScaredEnd());
         }
         else
         {
-            StopCoroutine(scaredRoutine);
             StopCoroutine(ColorRoutine);
+            StopCoroutine(scaredRoutine);
             ColorRoutine = StartCoroutine(ChangeColorInFinalScaredState());
             scaredRoutine = StartCoroutine(WaiScaredEnd());
         }
@@ -182,7 +190,7 @@ public class enemyIA : MonoBehaviour
         float time = 0;
         while (time < Diff.ScaredStateTime[stage])
         {
-            if (DataReceive.press)
+            if (true)
             {
                 time += Time.deltaTime;
                 // Debug.Log(time);
@@ -192,7 +200,7 @@ public class enemyIA : MonoBehaviour
             yield return null;
         }
         
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < ghostTotal; i++)
             EndScareState(i);
         scaredRoutine = null;
         
@@ -213,7 +221,7 @@ public class enemyIA : MonoBehaviour
         float time = 0;
         while (time< Diff.startTime[stage][i])
         {
-            if (DataReceive.press)
+            if (true)
             {
                 time += Time.deltaTime;
                // Debug.Log(time);
@@ -267,7 +275,7 @@ public class enemyIA : MonoBehaviour
                    
                     while (time < Diff.cornerTime[stage][i])
                     {
-                        if (DataReceive.press)
+                        if (true)
                         {
                             time += Time.deltaTime;
                             // Debug.Log(time);
@@ -284,7 +292,7 @@ public class enemyIA : MonoBehaviour
                 time = 0;
                 while (time < Diff.RefindAfterCorner[stage][i])
                 {
-                    if (DataReceive.press)
+                    if (true)
                     {
                         time += Time.deltaTime;
                         // Debug.Log(time);
@@ -311,7 +319,7 @@ public class enemyIA : MonoBehaviour
             time = 0;
             while (time < Diff.rndCornerTime[stage])
             {
-                if (DataReceive.press)
+                if (true)
                 {
                     time += Time.deltaTime;
                     // Debug.Log(time);
@@ -321,7 +329,7 @@ public class enemyIA : MonoBehaviour
                 yield return null;
             }
 
-             sort = Random.Range(0, 4);
+             sort = Random.Range(0, ghostTotal);
         }
     }
 
@@ -332,9 +340,9 @@ public class enemyIA : MonoBehaviour
         while (true)
         {
             time = 0;
-            while (time < Diff.refind[stage])
+            while (time < Diff.refind)
             {
-                if (DataReceive.press)
+                if (true)
                 {
                     time += Time.deltaTime;
                     // Debug.Log(time);
@@ -373,7 +381,7 @@ public class enemyIA : MonoBehaviour
         float time = 0;
         while (time < Diff.timeToRespawn[stage])
         {
-            if (DataReceive.press)
+            if (true)
             {
                 time += Time.deltaTime;
                // Debug.Log(time);
@@ -404,13 +412,16 @@ public class enemyIA : MonoBehaviour
     public void Prep_Stage()
     {
                  
-        for (int i=0;i <4; i++)
+        for (int i=0;i < ghostTotal; i++)
         {
+            Ghost[i].gameObject.SetActive(true);
+
             Ghost[i].speed = Diff.speed[stage][i];
             StartCoroutine(StartG(i));
+            StartCoroutine(SpeedControl());
                 
         }
-        StartCoroutine(rndCorner());
+        //StartCoroutine(rndCorner());
 
 
     }
@@ -430,7 +441,10 @@ public class enemyIA : MonoBehaviour
     private void Start()
     {
         
+        
         Diff = stg.GetComponent<Stages>();
+        ghostTotal = Diff.ghostActive[stage];
+        Debug.Log(ghostTotal);
         StartCoroutine(StartEnemyIA());
         
     }

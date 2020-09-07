@@ -97,7 +97,7 @@ public class DataReceive : MonoBehaviour
     //fucao para testar no editor
     private void Update()
     {
-        if(isEditor)
+        if (isEditor)
             if (Input.GetMouseButton(0))
                 press = true;
     }
